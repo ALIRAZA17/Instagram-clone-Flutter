@@ -112,7 +112,14 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
 
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  AuthMethods().signUpUser(
+                    email: _emailController.text,
+                    password: _passwordController.text,
+                    username: _usernameController.text,
+                    bio: _bioController.text,
+                  );
+                },
                 child: Container(
                   width: double.infinity,
                   alignment: Alignment.center,
@@ -146,13 +153,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: const Text("Don't have an account?"),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      AuthMethods().signUpUser(
-                          email: _emailController.text,
-                          password: _passwordController.text,
-                          username: _usernameController.text,
-                          bio: _bioController.text);
-                    },
+                    onTap: () {},
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         vertical: 8,
