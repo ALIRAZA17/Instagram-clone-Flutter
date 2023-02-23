@@ -1,8 +1,13 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:instagram_flutter/resources/auth_methods.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/widgets/text_field_input.dart';
+
+import '../utils/utils.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -16,6 +21,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+  Uint8List? _image;
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -26,7 +33,34 @@ class _SignupScreenState extends State<SignupScreen> {
     _usernameController.dispose();
   }
 
-  void selectImage() {}
+  void selectImage() async {
+    Uint8List im = await pickImage(ImageSource.gallery);
+    setState(() {
+      _image = im;
+    });
+  }
+
+  void signupUser() async {
+    setState(() {
+      isLoading = true;
+    });
+    String res = await AuthMethods().signUpUser(
+      email: _emailController.text,
+      password: _passwordController.text,
+      username: _usernameController.text,
+      bio: _bioController.text,
+      file: _image!,
+    );
+
+    if (res == "success") {
+      // ignore: use_build_context_synchronously
+      showSnackbar(res, context);
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,11 +86,16 @@ class _SignupScreenState extends State<SignupScreen> {
               // circular widget for profile picture
               Stack(
                 children: [
-                  const CircleAvatar(
-                    radius: 64,
-                    backgroundImage: NetworkImage(
-                        'https://images.unsplash.com/photo-1676570847207-460327c343c0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=396&q=80'),
-                  ),
+                  _image != null
+                      ? CircleAvatar(
+                          radius: 64,
+                          backgroundImage: MemoryImage(_image!),
+                        )
+                      : const CircleAvatar(
+                          radius: 64,
+                          backgroundImage: NetworkImage(
+                              'https://images.unsplash.com/photo-1676570847207-460327c343c0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=396&q=80'),
+                        ),
                   Positioned(
                     bottom: -10,
                     right: 0,
@@ -114,14 +153,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
 
               InkWell(
-                onTap: () {
-                  AuthMethods().signUpUser(
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                    username: _usernameController.text,
-                    bio: _bioController.text,
-                  );
-                },
+                onTap: signupUser,
                 child: Container(
                   width: double.infinity,
                   alignment: Alignment.center,
@@ -133,7 +165,13 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ),
                       color: blueColor),
-                  child: const Text("Log In"),
+                  child: isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            backgroundColor: primaryColor,
+                          ),
+                        )
+                      : const Text("Sign Up"),
                 ),
               ),
               const SizedBox(
