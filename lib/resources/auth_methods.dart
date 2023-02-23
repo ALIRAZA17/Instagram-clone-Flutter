@@ -44,6 +44,7 @@ class AuthMethods {
           'uid': cred.user!.uid,
           'followers': [],
           'following': [],
+          'imageUrl': photoUrl,
         });
 
         res = 'success';
