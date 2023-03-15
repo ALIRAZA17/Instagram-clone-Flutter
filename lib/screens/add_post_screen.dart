@@ -38,7 +38,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
             ),
             SimpleDialogOption(
               padding: const EdgeInsets.all(20),
-              child: const Text("Take a photo"),
+              child: const Text("Photo from Gallery"),
               onPressed: () async {
                 Navigator.of(context).pop();
                 Uint8List file = await pickImage(ImageSource.gallery);
