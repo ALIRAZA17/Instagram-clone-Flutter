@@ -18,40 +18,38 @@ class AddPostScreen extends StatefulWidget {
 class _AddPostScreenState extends State<AddPostScreen> {
   Uint8List? _file;
   final TextEditingController _descriptionController = TextEditingController();
-  _selectImage(BuildContext context) {
+  _selectImage(BuildContext parentContext) async {
     return showDialog(
-      context: context,
-      builder: (context) {
+      context: parentContext,
+      builder: (BuildContext context) {
         return SimpleDialog(
-          title: const Text("Create a Post"),
-          children: [
+          title: const Text('Create a Post'),
+          children: <Widget>[
             SimpleDialogOption(
-              padding: const EdgeInsets.all(20),
-              child: const Text("Take a photo"),
-              onPressed: () async {
-                Navigator.of(context).pop();
-                Uint8List file = await pickImage(ImageSource.camera);
-                setState(() {
-                  _file = file;
-                });
-              },
-            ),
+                padding: const EdgeInsets.all(20),
+                child: const Text('Take a photo'),
+                onPressed: () async {
+                  Navigator.pop(context);
+                  Uint8List file = await pickImage(ImageSource.camera);
+                  setState(() {
+                    _file = file;
+                  });
+                }),
             SimpleDialogOption(
-              padding: const EdgeInsets.all(20),
-              child: const Text("Photo from Gallery"),
-              onPressed: () async {
-                Navigator.of(context).pop();
-                Uint8List file = await pickImage(ImageSource.gallery);
-                setState(() {
-                  _file = file;
-                });
-              },
-            ),
+                padding: const EdgeInsets.all(20),
+                child: const Text('Choose from Gallery'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  Uint8List file = await pickImage(ImageSource.gallery);
+                  setState(() {
+                    _file = file;
+                  });
+                }),
             SimpleDialogOption(
               padding: const EdgeInsets.all(20),
               child: const Text("Cancel"),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context);
               },
             )
           ],

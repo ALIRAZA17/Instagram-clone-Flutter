@@ -58,7 +58,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
     if (res != "success") {
       // ignore: use_build_context_synchronously
-      showSnackbar(res, context);
+      showSnackBar(context, res);
     } else {
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushReplacement(MaterialPageRoute(
